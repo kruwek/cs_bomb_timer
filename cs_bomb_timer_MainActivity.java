@@ -85,72 +85,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-//        defButton.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.defs);
-//                mediaPlayer.start();
-//            }
-//            private Handler handler;
-//            private boolean longClickPerformed;
-//
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        handler = new Handler();
-//                        handler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                longClickPerformed = true;
-//                                stopTimer();
-//                            }
-//                        }, 5000);
-//                        return true;
-//                    case MotionEvent.ACTION_UP:
-//                        if (!longClickPerformed) {
-//                            handler.removeCallbacksAndMessages(null);
-//                        }
-//                        longClickPerformed = false;
-//                        return true;
-//                }
-//                return false;
-//            }
-//        });
-
-
-
-//        defButton.setOnTouchListener(new View.OnTouchListener() {
-//            private Handler handler;
-//            private boolean longClickPerformed;
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        handler = new Handler();
-//                        handler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                longClickPerformed = true;
-//                                stopTimer();
-//                            }
-//                        }, 5000);
-//                        return true;
-//                    case MotionEvent.ACTION_UP:
-//                        if (!longClickPerformed) {
-//                            handler.removeCallbacksAndMessages(null);
-//                        }
-//                        longClickPerformed = false;
-//                        return true;
-//                }
-//                return false;
-//            }
-//        });
-
-
     }
 
 
@@ -179,9 +113,6 @@ public class MainActivity extends AppCompatActivity {
                 licznik.setText("" + millisUntilFinished / 1000);
 
 
-//                MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.onebeeps);
-//                mediaPlayer.start();
-
             }
 
             @Override
@@ -199,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     mediaPlayerBeeps = null;
                 }
 
-                // tutaj dodać kod, który ma zostać wykonany po zakończeniu odliczania
+                
             }
         }.start();
     }
@@ -219,9 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayerBeeps.release();
                 mediaPlayerBeeps = null;
             }
-            // do something when timer is stopped, e.g. update UI or perform action
+           
         }
     }
 }
-//MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.defs);
-//                mediaPlayer.start();
