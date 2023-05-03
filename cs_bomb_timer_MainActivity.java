@@ -1,3 +1,5 @@
+//it's awful, i know 
+
 package com.example.bomb_timer_csgo_3;
 
 import android.media.MediaPlayer;
