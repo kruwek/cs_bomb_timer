@@ -1,4 +1,4 @@
-//it's awful, i know 
+//its garbage, I know
 
 package com.example.bomb_timer_csgo_3;
 
@@ -9,7 +9,9 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private Button defButton;
     private TextView licznik;
     private MediaPlayer mediaPlayerBeeps;
-
+    private TextView countText;
+    private CountDownTimer deftimer;
 
     private boolean czyTimerStoi = true;
 
@@ -33,16 +36,51 @@ public class MainActivity extends AppCompatActivity {
         plantButton = findViewById(R.id.plant);
         defButton = findViewById(R.id.def);
         licznik = findViewById(R.id.licznik);
+        EditText czasBomby = findViewById(R.id.czas_bomby);
+        countText = findViewById(R.id.deflicznik);
 
         plantButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startTimer(44000);
-                MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.plants);
-                mediaPlayer.start();
-                czyTimerStoi = false;
 
+                String czasString = czasBomby.getText().toString();
+
+                if (czyTimerStoi == true) {
+                    mediaPlayerBeeps = MediaPlayer.create(MainActivity.this, R.raw.beeps4);
+                    try {
+                        int czasMilisekundy = Integer.parseInt(czasString) * 1000;
+                        if (czasMilisekundy == 2137000){
+                            MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.rakietas);
+                            mediaPlayer.start();
+                            Toast.makeText(MainActivity.this, "O_O", Toast.LENGTH_SHORT).show();
+                        } else if (czasMilisekundy > mediaPlayerBeeps.getDuration() || czasMilisekundy==0) {
+                            
+                            MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nos);
+                            mediaPlayer.start();
+                            Toast.makeText(MainActivity.this, "Wybrany czas jest nieprawidłowy, maxymalny czas to " + mediaPlayerBeeps.getDuration() / 1000 + "sekund", Toast.LENGTH_SHORT).show();
+                        } else {
+                        
+                            MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.plants);
+                            mediaPlayer.start();
+                            mediaPlayerBeeps.seekTo(mediaPlayerBeeps.getDuration() - czasMilisekundy);
+                            mediaPlayerBeeps.start();
+                            startTimer(czasMilisekundy);
+                            czyTimerStoi = false;
+                        }
+                    } catch (NumberFormatException e) {
+                       
+                        MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nos);
+                        mediaPlayer.start();
+                        Toast.makeText(MainActivity.this, "Podaj prawidłową wartość czasu", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(MainActivity.this, "bomba jest już podłożona", Toast.LENGTH_SHORT).show();
+                    MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.nos);
+                    mediaPlayer.start();
+                }
             }
+
         });
 
         defButton.setOnTouchListener(new View.OnTouchListener() {
@@ -54,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+
                         handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -71,10 +110,14 @@ public class MainActivity extends AppCompatActivity {
                             mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.defs);
                         }
                         if(czyTimerStoi==false){
+                            countText.setVisibility(View.VISIBLE);
+                            startTimer();
                             mediaPlayer.start();
                         }
                         return true;
                     case MotionEvent.ACTION_UP:
+                        resetTimer();
+                        countText.setVisibility(View.INVISIBLE);
                         if (!longClickPerformed) {
                             handler.removeCallbacksAndMessages(null);
                             mediaPlayer.stop();
@@ -87,6 +130,10 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+
+
+
     }
 
 
@@ -97,15 +144,7 @@ public class MainActivity extends AppCompatActivity {
             timer = null;
         }
 
-        if (mediaPlayerBeeps != null) {
-            mediaPlayerBeeps.stop();
-            mediaPlayerBeeps.release();
-            mediaPlayerBeeps = null;
-        }
 
-        mediaPlayerBeeps = MediaPlayer.create(MainActivity.this, R.raw.beeps);
-        mediaPlayerBeeps.setLooping(true);
-        mediaPlayerBeeps.start();
 
 
 
@@ -113,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 licznik.setText("" + millisUntilFinished / 1000);
+
 
 
             }
@@ -132,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
                     mediaPlayerBeeps = null;
                 }
 
-                
             }
         }.start();
     }
@@ -152,7 +191,38 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayerBeeps.release();
                 mediaPlayerBeeps = null;
             }
-           
+       
         }
     }
+
+//kolejny licznik
+
+    private void startTimer() {
+        if (deftimer != null) {
+            deftimer.cancel();
+        }
+
+        deftimer = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                int count = (int) millisUntilFinished / 1000;
+                countText.setText(String.valueOf(count+1));
+            }
+
+            @Override
+            public void onFinish() {
+                
+                resetTimer();
+                countText.setVisibility(View.INVISIBLE);
+            }
+        }.start();
+    }
+
+    private void resetTimer() {
+        if (deftimer != null) {
+            deftimer.cancel();
+            deftimer = null;
+        }
+    }
+
 }
